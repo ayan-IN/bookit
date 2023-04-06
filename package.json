@@ -6,10 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "data:import": "node utils/seeder",
+    "data:destroy": "node utils/seeder -d"
   },
   "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "mongoose": "^7.0.3",
     "next": "13.2.4",
+    "next-connect": "^0.13.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   }
