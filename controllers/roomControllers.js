@@ -1,15 +1,52 @@
 import Room from '../models/room.model'
 import ErrorHandler from '@/utils/errorHandler'
 import asyncErrors from '@/middlewares/asyncErrors'
+import APIFeatures from '@/utils/apiFeatures'
 
 //* @desc Get all rooms
 //* @route GET /api/rooms
 //* @access Public
 const getAllRooms = asyncErrors(async (req, res) => {
-  const rooms = await Room.find()
+  const resPerPage = 4
+  // const roomsCount = await Room.countDocuments()
+
+  // const apiFeatures = new APIFeatures(Room.find(), req.query)
+  //   .search()
+  //   .filter()
+
+  // let rooms = await apiFeatures.query
+  // let filteredRoomsCount = rooms.length
+  // apiFeatures.pagination(resPerPage)
+  //  rooms = await apiFeatures.query.clone()
+
+  // const rooms = await Room.find()
+
+  //! Implementing Advanced Search for location
+  const locationSearch = req.query.location
+    ? {
+        address: {
+          $regex: req.query.location,
+          $options: 'i',
+        },
+      }
+    : {}
+  //! Implementing filter
+  const query = { ...req.query }
+  const removeFields = ['location']
+  removeFields.forEach((element) => delete query[element])
+  //! Implementing Pagination
+  const currentPage = Number(req.query.page) || 1
+  const skipItemCount = resPerPage * (currentPage - 1)
+  const rooms = await Room.find({ ...locationSearch,...query })
+    .limit(resPerPage)
+    .skip(skipItemCount)
+  const filteredRooms = rooms.length
   res.status(200).json({
     success: true,
-    count: rooms.length,
+    filteredRooms,
+    // roomsCount,
+    // resPerPage,
+    // filteredRoomsCount,
     rooms,
   })
 })
