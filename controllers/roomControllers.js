@@ -8,19 +8,6 @@ import APIFeatures from '@/utils/apiFeatures'
 //* @access Public
 const getAllRooms = asyncErrors(async (req, res) => {
   const resPerPage = 4
-  // const roomsCount = await Room.countDocuments()
-
-  // const apiFeatures = new APIFeatures(Room.find(), req.query)
-  //   .search()
-  //   .filter()
-
-  // let rooms = await apiFeatures.query
-  // let filteredRoomsCount = rooms.length
-  // apiFeatures.pagination(resPerPage)
-  //  rooms = await apiFeatures.query.clone()
-
-  // const rooms = await Room.find()
-
   //! Implementing Advanced Search for location
   const locationSearch = req.query.location
     ? {
@@ -37,7 +24,7 @@ const getAllRooms = asyncErrors(async (req, res) => {
   //! Implementing Pagination
   const currentPage = Number(req.query.page) || 1
   const skipItemCount = resPerPage * (currentPage - 1)
-  const rooms = await Room.find({ ...locationSearch,...query })
+  const rooms = await Room.find({ ...locationSearch, ...query })
     .limit(resPerPage)
     .skip(skipItemCount)
   const filteredRooms = rooms.length
